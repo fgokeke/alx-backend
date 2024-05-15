@@ -1,13 +1,7 @@
 #!/usr/bin/env python3
-"""A basic Flask app."""
+""" a script that starts a Basic Babel setup """
 
-
-from flask import (
-    Flask,
-    render_template,
-    request,
-    g
-)
+from flask import request, Flask, render_template, g
 from flask_babel import Babel
 from typing import Union
 
@@ -18,19 +12,18 @@ users = {
     4: {"name": "Teletubby", "locale": None, "timezone": "Europe/London"},
 }
 
-
 app = Flask(__name__)
 babel = Babel(app)
 
 
-class Config:
-    """Configuration class for the Flask app."""
-    LANGUAGES = ["en", "fr"]
+class Config(object):
+    '''Babel config'''
+    LANGUAGES = ['en', 'fr']
     BABEL_DEFAULT_LOCALE = 'en'
     BABEL_DEFAULT_TIMEZONE = 'UTC'
 
 
-app.config.from_object(5-app.Config)
+app.config.from_object('5-app.Config')
 
 
 @app.route('/', methods=['GET'], strict_slashes=False)
@@ -41,12 +34,15 @@ def hello() -> str:
 
 @babel.localeselector
 def get_locale() -> str:
-    """Retrieves the locale for a web page.
-    """
-    loc = request.args.get('locale')
-    if loc in app.config["LANGUAGES"]:
-        return loc
-    return request.accept_languages.best_match(app.config["LANGUAGES"])
+    '''determine the best match for supported languages
+       detect if the incoming request contains locale
+    '''
+    if request.args.get('locale'):
+        locale = request.args.get('locale')
+        if locale in app.config['LANGUAGES']:
+            return locale
+    else:
+        return request.accept_languages.best_match(app.config['LANGUAGES'])
 
 
 def get_user() -> Union[dict, None]:
@@ -65,5 +61,5 @@ def before_request():
     g.user = get_user()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000)
