@@ -16,7 +16,6 @@ class Config:
 app = Flask(__name__)
 app.config.from_object(Config)
 app.url_map.strict_slashes = False
-
 babel = Babel(app)
 
 
@@ -28,7 +27,7 @@ def get_locale() -> str:
 
 
 @app.route("/")
-def welcome():
+def welcome() -> str:
     """Route to render the index.html template."""
     return render_template('3-index.html')
 
